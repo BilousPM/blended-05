@@ -3,14 +3,22 @@ import PropTypes from "prop-types";
 import { Comment } from "../Comment/Comment";
 import { Grid } from "../Grid/Grid";
 import { useGetCommentsQuery } from "../../redux/commentApi";
+import { useSelector } from "react-redux";
+import { selectFilters } from "../../redux/filterSlice";
 
 export const Comments = () => {
   const { data: comments } = useGetCommentsQuery();
+  const filter = useSelector(selectFilters);
+  const filteredComments = comments?.filter((comment) =>
+    comment.author.toLowerCase().includes(filter.toLowerCase())
+  );
 
   return (
     <Grid>
       {comments &&
-        comments.map(comment => <Comment key={comment.id} {...comment} />)}
+        filteredComments.map((comment) => (
+          <Comment key={comment.id} {...comment} />
+        ))}
     </Grid>
   );
 };
